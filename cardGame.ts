@@ -7,6 +7,7 @@ class NanjaMonja {
 class Game {
     private deck: NanjaMonja[] = [];
     private currentCard: NanjaMonja | null = null;
+    private nameCards: Array<string> = [];
     private namedCards: { [id: number]: string } = {};
     private players: { name: string, score: number }[] = [];
     private language: Language = 'en';
@@ -15,24 +16,28 @@ class Game {
         en: {
             newName: 'New name given: ',
             correct: ' is correct!',
-            incorrect: 'Incorrect. The correct name was ',
+            incorrect: 'is incorrect!',
             enterName: 'Enter the name for this creature:',
             gameOver: 'Game Over! The winner is ',
             nextCard: 'Next Card',
             giveName: 'Give Name',
             guessName: 'Guess Name',
-            score: 'Score: '
+            score: 'Score: ',
+            invalidName: 'Enter valid name!',
+            nameAlreadyTaken: 'Name is already taken!'
         },
         ja: {
             newName: '新しい名前が付けられました: ',
             correct: 'が正解！',
-            incorrect: '不正解。正しい名前は ',
+            incorrect: 'が不正解！',
             enterName: 'この仲間の名前は？',
             gameOver: 'ゲーム終了！勝者は',
             nextCard: '次のカード',
             giveName: '名前を付ける',
             guessName: '名前を言う',
-            score: 'スコア: '
+            score: 'スコア: ',
+            invalidName: '有効な名前を入力してください!',
+            nameAlreadyTaken: '名前はすでに採用されています！'
         }
     };
 
@@ -48,7 +53,7 @@ class Game {
     }
 
     private initializeDeck() {
-        for (var i = 1; i <= 2; i++) {
+        for (var i = 1; i <= 12; i++) {
             this.deck.push(new NanjaMonja(i, 'images/' + i + '.jpg'));
             this.deck.push(new NanjaMonja(i, 'images/' + i + '.jpg'));
         }
@@ -80,10 +85,25 @@ class Game {
     }
 
     public nameCard(name: string) {
+        if (name === '') {
+            this.updateMessage(this.translations[this.language].invalidName);
+            return;
+        }
+
+        if (this.nameCards.indexOf(name) !== -1) {
+            this.updateMessage(this.translations[this.language].nameAlreadyTaken);
+            return;
+        } else {
+            this.nameCards.push(name);
+        }
+
         if (this.currentCard) {
             this.namedCards[this.currentCard.id] = name;
             this.updateMessage(this.translations[this.language].newName + name);
         }
+
+        this.drawCard();
+        this.updateCardDisplay(); // Ensure card display is updated initially
     }
 
     public guessCorrect(playerIndex: number) {
@@ -95,7 +115,7 @@ class Game {
                 this.updatePlayersDisplay();
                 this.updateMessage(this.players[playerIndex].name + this.translations[this.language].correct);
             } else {
-                this.updateMessage(this.translations[this.language].incorrect + correctName + '。');
+                this.updateMessage(this.players[playerIndex].name + this.translations[this.language].incorrect);
             }
         }
     }
