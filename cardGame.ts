@@ -11,12 +11,13 @@ class Game {
     private namedCards: { [id: number]: string } = {};
     private players: { name: string, score: number }[] = [];
     private language: Language = 'en';
+    private isGuessingTime: boolean = false;
 
     private translations = {
         en: {
             newName: 'New name given: ',
             correct: ' is correct!',
-            incorrect: 'is incorrect!',
+            incorrect: ' is incorrect!',
             enterName: 'Enter the name for this creature:',
             gameOver: 'Game Over! The winner is ',
             nextCard: 'Next Card',
@@ -49,6 +50,24 @@ class Game {
         this.updatePlayersDisplay();
         this.updateUILanguage();
         this.autoDraw();
+
+        // Add event listener for keyboard input
+        document.addEventListener('keydown', (event) => {
+            // Check if it's guessing time
+            if (this.isGuessingTime) {
+                switch (event.key) {
+                    case 'a':
+                        this.guessCorrect(0); // Player 1 guess
+                        break;
+                    case ' ': // Spacebar
+                        this.guessCorrect(1); // Player 2 guess
+                        break;
+                    case '\'': // Apostrophe key
+                        this.guessCorrect(2); // Player 3 guess
+                        break;
+                }
+            }
+        });
     }
 
     private autoDraw() {
@@ -57,16 +76,16 @@ class Game {
     }
 
     private initializeDeck() {
-        for (var i = 1; i <= 12; i++) {
+        for (let i = 1; i <= 12; i++) {
             this.deck.push(new NanjaMonja(i, 'images/' + i + '.jpg'));
             this.deck.push(new NanjaMonja(i, 'images/' + i + '.jpg'));
         }
     }
 
     private shuffleDeck() {
-        for (var i = this.deck.length - 1; i > 0; i--) {
-            var j = Math.floor(Math.random() * (i + 1));
-            var temp = this.deck[i];
+        for (let i = this.deck.length - 1; i > 0; i--) {
+            let j = Math.floor(Math.random() * (i + 1));
+            let temp = this.deck[i];
             this.deck[i] = this.deck[j];
             this.deck[j] = temp;
         }
@@ -83,8 +102,10 @@ class Game {
 
         if (this.currentCard && this.namedCards.hasOwnProperty(this.currentCard.id)) {
             this.showPlayerButtons();
+            this.isGuessingTime = true; // It's guessing time
         } else if (this.currentCard) {
             this.showNameInput();
+            this.isGuessingTime = false; // Not guessing time
         }
     }
 
@@ -111,8 +132,8 @@ class Game {
 
     public guessCorrect(playerIndex: number) {
         if (this.currentCard) {
-            var correctName = this.namedCards[this.currentCard.id];
-            var guessedName = prompt(this.players[playerIndex].name + ', ' + this.translations[this.language].enterName);
+            let correctName = this.namedCards[this.currentCard.id];
+            let guessedName = prompt(this.players[playerIndex].name + ', ' + this.translations[this.language].enterName);
             if (guessedName && guessedName.toLowerCase() === correctName.toLowerCase()) {
                 this.players[playerIndex].score++;
                 this.updatePlayersDisplay();
@@ -125,7 +146,7 @@ class Game {
     }
 
     private updateCardDisplay() {
-        var cardImage = document.getElementById('card-image') as HTMLImageElement;
+        let cardImage = document.getElementById('card-image') as HTMLImageElement;
         if (this.currentCard) {
             cardImage.src = this.currentCard.imageUrl;
         }
@@ -142,7 +163,7 @@ class Game {
     }
 
     private updatePlayersDisplay() {
-        var playersDiv = document.getElementById('players');
+        let playersDiv = document.getElementById('players');
         if (playersDiv) {
             playersDiv.innerHTML = this.players.map((player) => {
                 return '<div class="player">' +
@@ -154,14 +175,14 @@ class Game {
     }
 
     private updateMessage(message: string) {
-        var messageElement = document.getElementById('message');
+        let messageElement = document.getElementById('message');
         if (messageElement) {
             messageElement.textContent = message;
         }
     }
 
     private endGame() {
-        var winner = this.players.reduce(function(prev, current) {
+        let winner = this.players.reduce(function(prev, current) {
             return (prev.score > current.score) ? prev : current;
         });
         this.updateMessage(this.translations[this.language].gameOver + winner.name + '!');
@@ -176,35 +197,27 @@ class Game {
     private updateUILanguage() {
         document.getElementById('next-card')!.textContent = this.translations[this.language].nextCard;
         document.getElementById('submit-name')!.textContent = this.translations[this.language].giveName;
-        var playerButtons = document.getElementsByClassName('player-button');
-        for (var i = 0; i < playerButtons.length; i++) {
-            playerButtons[i].textContent = this.translations[this.language].guessName;
+        let playerButtons = document.getElementsByClassName('player-button');
+        for (let i = 0; i < playerButtons.length; i++) {
+            (playerButtons[i] as HTMLButtonElement).textContent = this.translations[this.language].guessName;
         }
     }
 }
 
 // Game initialization
-var game = new Game(['Player 1', 'Player 2', 'Player 3'], 'en');
+let game = new Game(['Player 1', 'Player 2', 'Player 3'], 'en');
 
 document.getElementById('next-card')!.addEventListener('click', function() {
     game.drawCard();
 });
 
 document.getElementById('submit-name')!.addEventListener('click', function() {
-    var nameInput = document.getElementById('new-name') as HTMLInputElement;
+    let nameInput = document.getElementById('new-name') as HTMLInputElement;
     game.nameCard(nameInput.value);
     nameInput.value = '';
 });
 
-document.getElementById('player-buttons')!.addEventListener('click', function(event) {
-    var target = event.target as HTMLButtonElement;
-    if (target.classList.contains('player-button')) {
-        var playerIndex = parseInt(target.getAttribute('data-player') || '0', 10);
-        game.guessCorrect(playerIndex);
-    }
-});
-
 document.getElementById('language-select')!.addEventListener('change', function(event) {
-    var select = event.target as HTMLSelectElement;
+    let select = event.target as HTMLSelectElement;
     game.changeLanguage(select.value as Language);
 });
