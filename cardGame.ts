@@ -43,6 +43,8 @@ class Game {
         this.language = language;
         this.updatePlayersDisplay();
         this.updateUILanguage();
+        this.drawCard();
+        this.updateCardDisplay(); // Ensure card display is updated initially
     }
 
     private initializeDeck() {
