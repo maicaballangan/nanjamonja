@@ -6,7 +6,7 @@ class NanjaMonja {
 
 class Game {
     private deck: NanjaMonja[] = [];
-    private currentCard: NanjaMonja | null = null;
+    private currentCard: NanjaMonja | undefined = undefined;
     private nameCards: Array<string> = [];
     private namedCards: { [id: number]: string } = {};
     private players: { name: string, score: number }[] = [];
@@ -16,15 +16,16 @@ class Game {
         en: {
             newName: 'New name given: ',
             correct: ' is correct!',
-            incorrect: 'is incorrect!',
+            incorrect: ' is incorrect!',
             enterName: 'Enter the name for this creature:',
             gameOver: 'Game Over! The winner is ',
-            nextCard: 'Next Card',
+            nextCard: 'Skip Card',
             giveName: 'Give Name',
             guessName: 'Guess Name',
             score: 'Score: ',
             invalidName: 'Enter valid name!',
-            nameAlreadyTaken: 'Name is already taken!'
+            nameAlreadyTaken: 'Name is already taken!',
+            showName: 'The name of the card is '
         },
         ja: {
             newName: '新しい名前が付けられました: ',
@@ -37,7 +38,8 @@ class Game {
             guessName: '名前を言う',
             score: 'スコア: ',
             invalidName: '有効な名前を入力してください!',
-            nameAlreadyTaken: '名前はすでに採用されています！'
+            nameAlreadyTaken: '名前はすでに採用されています！',
+            showName: 'カードの名前 '
         }
     };
 
@@ -78,7 +80,7 @@ class Game {
             return;
         }
 
-        this.currentCard = this.deck.pop() || null;
+        this.currentCard = this.deck.pop();
         this.updateCardDisplay();
 
         if (this.currentCard && this.namedCards.hasOwnProperty(this.currentCard.id)) {
@@ -86,6 +88,18 @@ class Game {
         } else if (this.currentCard) {
             this.showNameInput();
         }
+    }
+
+    public skipCard() {
+        // Return card into deck
+        if (this.currentCard !== undefined) { 
+            this.updateMessage(this.translations[this.language].showName + this.namedCards[this.currentCard.id]);
+            this.deck.push(this.currentCard);
+        }
+
+        // shuffle deck
+        this.shuffleDeck();
+        this.drawCard();
     }
 
     public nameCard(name: string) {
@@ -133,11 +147,13 @@ class Game {
 
     private showNameInput() {
         document.getElementById('name-input')!.style.display = 'block';
+        document.getElementById('skip-card')!.style.display = 'none';
         document.getElementById('player-buttons')!.style.display = 'none';
     }
 
     private showPlayerButtons() {
         document.getElementById('name-input')!.style.display = 'none';
+        document.getElementById('skip-card')!.style.display = 'block';
         document.getElementById('player-buttons')!.style.display = 'block';
     }
 
@@ -165,6 +181,10 @@ class Game {
             return (prev.score > current.score) ? prev : current;
         });
         this.updateMessage(this.translations[this.language].gameOver + winner.name + '!');
+
+        document.getElementById('name-input')!.style.display = 'none';
+        document.getElementById('skip-card')!.style.display = 'none';
+        document.getElementById('player-buttons')!.style.display = 'none';
     }
 
     public changeLanguage(lang: Language) {
@@ -174,7 +194,7 @@ class Game {
     }
 
     private updateUILanguage() {
-        document.getElementById('next-card')!.textContent = this.translations[this.language].nextCard;
+        document.getElementById('skip-card')!.textContent = this.translations[this.language].nextCard;
         document.getElementById('submit-name')!.textContent = this.translations[this.language].giveName;
         var playerButtons = document.getElementsByClassName('player-button');
         for (var i = 0; i < playerButtons.length; i++) {
@@ -186,14 +206,21 @@ class Game {
 // Game initialization
 var game = new Game(['Player 1', 'Player 2', 'Player 3'], 'en');
 
-document.getElementById('next-card')!.addEventListener('click', function() {
-    game.drawCard();
+document.getElementById('game-area')!.style.display = 'none';
+
+document.getElementById('start-game')!.addEventListener('click', function() {
+    document.getElementById('game-area')!.style.display = 'block';
+    document.getElementById('new-game')!.style.display = 'none';
 });
 
 document.getElementById('submit-name')!.addEventListener('click', function() {
     var nameInput = document.getElementById('new-name') as HTMLInputElement;
     game.nameCard(nameInput.value);
     nameInput.value = '';
+});
+
+document.getElementById('skip-card')!.addEventListener('click', function() {
+    game.skipCard();
 });
 
 document.getElementById('player-buttons')!.addEventListener('click', function(event) {

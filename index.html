@@ -102,6 +102,10 @@
         .button-group button {
             margin: 5px;
         }
+        
+        #skip-card {
+            background-color: #bc2e2e;
+        }
     </style>
 </head>
 
@@ -112,6 +116,13 @@
         <option value="en">English</option>
         <option value="ja">日本語</option>
     </select>
+
+    <div id="new-game">
+        <img id="nanjamonja" src="images/index.jpg">
+        <div class="button-group">
+            <button id="start-game">Start Game</button>
+        </div>
+    </div>
 
     <div id="game-area">
         <img id="card-image" src="" alt="Nanja-Monja">
@@ -129,7 +140,7 @@
         </div>
 
         <div class="button-group">
-            <button id="next-card">Next Card</button>
+            <button id="skip-card">Skip Card</button>
         </div>
 
             
