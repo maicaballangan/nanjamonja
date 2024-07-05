@@ -48,6 +48,10 @@ class Game {
         this.language = language;
         this.updatePlayersDisplay();
         this.updateUILanguage();
+        this.autoDraw();
+    }
+
+    private autoDraw() {
         this.drawCard();
         this.updateCardDisplay(); // Ensure card display is updated initially
     }
@@ -102,8 +106,7 @@ class Game {
             this.updateMessage(this.translations[this.language].newName + name);
         }
 
-        this.drawCard();
-        this.updateCardDisplay(); // Ensure card display is updated initially
+        this.autoDraw(); // Ensure card display is updated initially
     }
 
     public guessCorrect(playerIndex: number) {
@@ -114,6 +117,7 @@ class Game {
                 this.players[playerIndex].score++;
                 this.updatePlayersDisplay();
                 this.updateMessage(this.players[playerIndex].name + this.translations[this.language].correct);
+                this.autoDraw();
             } else {
                 this.updateMessage(this.players[playerIndex].name + this.translations[this.language].incorrect);
             }
