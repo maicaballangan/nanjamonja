@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Card Naming Game</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="game-container">
+        <div id="player-turn"></div>
+        <div id="card-display">
+            <img id="card-image" src="" alt="Card Image">
+        </div>
+        <div id="guess-input">
+            <input type="text" id="guess-text" placeholder="Enter card name">
+            <button id="guess-button">Guess</button>
+        </div>
+
+        <div id="next-card">
+            <button id="next-card-button">Next Card</button>
+        </div>
+        <div id="scoreboard">
+            <h2>Scoreboard</h2>
+            <ul id="scores"></ul>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
