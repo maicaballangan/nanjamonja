@@ -44,7 +44,8 @@
             margin-bottom: 20px;
         }
 
-        #name-input, #player-buttons {
+        #name-input,
+        #player-instructions {
             margin-top: 20px;
             display: none;
         }
@@ -122,20 +123,14 @@
             <button id="submit-name">Give Name</button>
         </div>
 
-        <div id="player-buttons">
-            <button class="player-button" data-player="0">Guess Name</button>
-            <button class="player-button" data-player="1">Guess Name</button>
-            <button class="player-button" data-player="2">Guess Name</button>
-        </div>
+        <div id="player-instructions"></div>
 
         <div class="button-group">
             <button id="next-card">Next Card</button>
         </div>
 
-            
         <div id="players"></div>
     </div>
-
 
     <script src="cardGame.js"></script>
 </body>
