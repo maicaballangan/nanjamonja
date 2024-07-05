@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ナンジャモンジャ族ゲーム</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        #game-area {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        #card-image {
+            width: 200px;
+            height: 300px;
+            border: 1px solid #000;
+            margin-bottom: 10px;
+        }
+        #name-input {
+            margin-bottom: 10px;
+        }
+        #players {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        .player {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>ナンジャモンジャ族ゲーム</h1>
+    <div id="game-area">
+        <img id="card-image" src="" alt="ナンジャモンジャ">
+        <div id="name-input" style="display: none;">
+            <input type="text" id="new-name" placeholder="新しい名前を入力">
+            <button id="submit-name">名前を付ける</button>
+        </div>
+        <button id="next-card">次のカードをめくる</button>
+        <button id="guess-name" style="display: none;">名前を言う</button>
+    </div>
+    <div id="players"></div>
+    <div id="message"></div>
+    <script src="game.js"></script>
+</body>
+</html>
